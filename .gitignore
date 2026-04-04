@@ -1,0 +1,53 @@
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE files
+# =========================
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+.vs/
+
+# =========================
+# Java / Maven / Gradle
+# =========================
+target/
+out/
+build/
+.gradle/
+
+# =========================
+# Node.js / Frontend
+# =========================
+node_modules/
+dist/
+coverage/
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Environment / secrets
+# =========================
+.env
+.env.local
+.env.*.local
+application-local.yml
+application-local.properties
+
+# =========================
+# Temp files
+# =========================
+*.tmp
+*.swp
+*.swo
