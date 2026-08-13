@@ -56,4 +56,11 @@ public class TaskFlowService {
         task.setStatus(status);
         return taskRepository.save(task);
     }
+
+    public void deleteTask(Long taskId) {
+        if (!taskRepository.existsById(taskId)) {
+            throw new IllegalArgumentException("Task not found: " + taskId);
+        }
+        taskRepository.deleteById(taskId);
+    }
 }

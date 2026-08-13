@@ -1,6 +1,10 @@
 package com.example.taskflow.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
@@ -21,8 +25,13 @@ public class Task {
     @Column(nullable = false)
     private TaskStatus status = TaskStatus.TODO;
 
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_id")
+    @JsonIgnore
     private Project project;
 
     public Long getId() {
@@ -71,5 +80,13 @@ public class Task {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

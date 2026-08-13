@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Task, TaskStatus } from '@/types/task'
 
-defineProps<{
+const props = defineProps<{
   tasks: Task[]
 }>()
 
@@ -11,11 +12,28 @@ const emit = defineEmits<{
 }>()
 
 const statusOptions: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE']
+
+const todoCount = computed(() => props.tasks.filter((task) => task.status === 'TODO').length)
+const inProgressCount = computed(
+  () => props.tasks.filter((task) => task.status === 'IN_PROGRESS').length
+)
+const doneCount = computed(() => props.tasks.filter((task) => task.status === 'DONE').length)
+
+function formatDate(value: string): string {
+  return new Date(value).toLocaleString()
+}
 </script>
 
 <template>
   <section class="card">
-    <h2>Task List</h2>
+    <div class="board-header">
+      <h2>Task Board</h2>
+      <div class="board-stats">
+        <span>TODO: {{ todoCount }}</span>
+        <span>IN PROGRESS: {{ inProgressCount }}</span>
+        <span>DONE: {{ doneCount }}</span>
+      </div>
+    </div>
 
     <div class="table-wrapper">
       <table class="task-table">
@@ -54,7 +72,7 @@ const statusOptions: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE']
                 </option>
               </select>
             </td>
-            <td>{{ new Date(task.createdAt).toLocaleString() }}</td>
+            <td>{{ formatDate(task.createdAt) }}</td>
             <td>
               <button class="danger" @click="emit('deleteTask', task.id)">Delete</button>
             </td>
@@ -68,3 +86,25 @@ const statusOptions: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE']
     </div>
   </section>
 </template>
+
+<style scoped>
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.board-header h2 {
+  margin: 0;
+}
+
+.board-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: #6b7280;
+  font-size: 14px;
+}
+</style>

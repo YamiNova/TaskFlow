@@ -34,4 +34,9 @@ public class TaskController {
                                  @Valid @RequestBody UpdateTaskStatusRequest request) {
         return taskFlowService.updateTaskStatus(taskId, request.getStatus());
     }
+
+    @DeleteMapping("/{taskId}")
+    public void deleteTask(@PathVariable Long taskId) {
+        taskFlowService.deleteTask(taskId);
+    }
 }

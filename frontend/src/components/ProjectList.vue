@@ -1,82 +1,101 @@
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { reactive } from 'vue'
+import type { CreateProjectRequest } from '@/types/project'
+import type { Project } from '@/types/project'
 
-defineProps({
-  projects: {
-    type: Array,
-    default: () => []
-  },
-  selectedProjectId: {
-    type: Number,
-    default: null
-  }
+defineProps<{
+  projects: Project[]
+  selectedProjectId: number | null
+}>()
+
+const emit = defineEmits<{
+  createProject: [payload: CreateProjectRequest]
+  selectProject: [projectId: number]
+}>()
+
+const form = reactive<CreateProjectRequest>({
+  name: '',
+  description: ''
 })
 
-const emit = defineEmits(['create-project', 'select-project'])
+function onSubmit(): void {
+  if (!form.name.trim()) {
+    return
+  }
 
-const name = ref('')
-const description = ref('')
-
-const submit = () => {
-  if (!name.value.trim()) return
-  emit('create-project', {
-    name: name.value,
-    description: description.value
+  emit('createProject', {
+    name: form.name.trim(),
+    description: form.description?.trim() || undefined
   })
-  name.value = ''
-  description.value = ''
+
+  form.name = ''
+  form.description = ''
 }
 </script>
 
 <template>
-  <div>
+  <section class="card">
     <h2>Projects</h2>
 
-    <div class="form-block">
-      <input v-model="name" placeholder="Project name" />
-      <textarea v-model="description" placeholder="Project description" />
-      <button @click="submit">Create Project</button>
-    </div>
+    <form class="task-form" @submit.prevent="onSubmit">
+      <label>
+        <span>Name</span>
+        <input v-model="form.name" type="text" placeholder="Project name" />
+      </label>
+
+      <label>
+        <span>Description</span>
+        <textarea v-model="form.description" rows="3" placeholder="Project description" />
+      </label>
+
+      <button type="submit">Create Project</button>
+    </form>
 
     <ul class="project-list">
       <li
         v-for="project in projects"
         :key="project.id"
         :class="{ active: project.id === selectedProjectId }"
-        @click="emit('select-project', project.id)"
+        @click="emit('selectProject', project.id)"
       >
         <strong>{{ project.name }}</strong>
-        <p>{{ project.description }}</p>
+        <p>{{ project.description || 'No description' }}</p>
       </li>
+
+      <li v-if="projects.length === 0" class="empty-item">No projects yet.</li>
     </ul>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-.form-block {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
 .project-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 24px 0 0;
 }
+
 .project-list li {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
   margin-bottom: 8px;
   cursor: pointer;
 }
+
 .project-list li.active {
-  border-color: #333;
-  background: #f0f0f0;
+  border-color: #111827;
+  background: #f9fafb;
 }
+
 .project-list p {
   margin: 4px 0 0;
-  color: #666;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.empty-item {
+  cursor: default;
+  color: #6b7280;
+  text-align: center;
 }
 </style>
