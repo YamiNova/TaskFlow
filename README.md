@@ -4,7 +4,7 @@ A minimal task collaboration system with a Spring Boot backend and Vue 3 fronten
 
 ## Prerequisites
 
-- Java 21
+- Java 17+
 - Node.js 20+
 
 ## Backend
