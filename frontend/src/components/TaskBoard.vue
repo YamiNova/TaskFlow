@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Task, TaskStatus } from '@/types/task'
+import { STATUS_LABELS, formatDateTime } from '@/utils/format'
 
 const props = defineProps<{
   tasks: Task[]
@@ -19,8 +20,8 @@ const inProgressCount = computed(
 )
 const doneCount = computed(() => props.tasks.filter((task) => task.status === 'DONE').length)
 
-function formatDate(value: string): string {
-  return new Date(value).toLocaleString()
+function statusLabel(status: TaskStatus): string {
+  return STATUS_LABELS[status]
 }
 </script>
 
@@ -29,9 +30,9 @@ function formatDate(value: string): string {
     <div class="board-header">
       <h2>Task Board</h2>
       <div class="board-stats">
-        <span>TODO: {{ todoCount }}</span>
-        <span>IN PROGRESS: {{ inProgressCount }}</span>
-        <span>DONE: {{ doneCount }}</span>
+        <span>To Do: {{ todoCount }}</span>
+        <span>In Progress: {{ inProgressCount }}</span>
+        <span>Done: {{ doneCount }}</span>
       </div>
     </div>
 
@@ -44,7 +45,7 @@ function formatDate(value: string): string {
             <th>Assignee</th>
             <th>Status</th>
             <th>Created At</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -68,11 +69,11 @@ function formatDate(value: string): string {
                 "
               >
                 <option v-for="status in statusOptions" :key="status" :value="status">
-                  {{ status }}
+                  {{ statusLabel(status) }}
                 </option>
               </select>
             </td>
-            <td>{{ formatDate(task.createdAt) }}</td>
+            <td>{{ formatDateTime(task.createdAt) }}</td>
             <td>
               <button class="danger" @click="emit('deleteTask', task.id)">Delete</button>
             </td>
